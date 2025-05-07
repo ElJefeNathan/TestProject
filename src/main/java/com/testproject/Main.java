@@ -31,6 +31,10 @@ public class Main {
     public static void main(String[] args) {
         Main m = new Main();
         Connection con = m.get_Db_connection();
+        Database_Read dr = new Database_Read(con);
+        dr.read();
+
+
         try {
             con.close();
         }
