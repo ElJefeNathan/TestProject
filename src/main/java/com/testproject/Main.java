@@ -8,21 +8,30 @@ import java.sql.SQLException;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
 
-    private Connection get_Db_connection() {
+    private Connection db_connect() {
         Connection con = null;
         try {
+            Thread.sleep(30000);
             Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/devops_test", "root", "");
-            System.out.println("Database is connected.");
         }
-        catch (ClassNotFoundException ce) {
-            System.out.println(ce.getMessage());
+        catch (Exception ex) {
+            ex.printStackTrace();
         }
-        catch (SQLException se) {
-            se.printStackTrace();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+
+        int attempt = 1;
+
+        while(true) {
+            try {
+                Thread.sleep(5000);
+                con = DriverManager.getConnection("jdbc:mysql://db:3306/testdb?useSSL=false&allowPublicKeyRetrieval=true", "root", "root");
+                System.out.println("Successful connected.");
+                break;
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+                System.out.println("Fail to connect, attempt = " + attempt);
+                attempt++;
+            }
         }
 
         return con;
@@ -30,7 +39,7 @@ public class Main {
 
     public static void main(String[] args) {
         Main m = new Main();
-        Connection con = m.get_Db_connection();
+        Connection con = m.db_connect();
         Database_Read dr = new Database_Read(con);
         dr.read();
 
